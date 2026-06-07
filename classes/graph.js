@@ -1,46 +1,88 @@
 export class Graph { 
     constructor() {
-        this.node = ["A", "B", "C", "D", "E", "F", "G", "H"];
-        this.matrix = Array.from({ length: this.node.length }, () => new Array(this.node.length).fill(false));
+        const SIZE = 8;
+        this.matrix = Array.from({ length: SIZE }, () => new Array(SIZE).fill(false));
     }
 
-    #isValid(src, dst) {
-        if (!Number.isInteger(src)) throw new TypeError("Source must be an integer");
-        if (!Number.isInteger(dst)) throw new TypeError("Destination must be an integer");
-        if (src === dst) throw new Error("Source and destination cannot be the same");
-        if (src < 0 || src >= this.matrix.length) throw new RangeError("Source index out of bounds");
-        if (dst < 0 || dst >= this.matrix.length) throw new RangeError("Destination index out of bounds");
+    #isValid(start, end) {
+        if (!Array.isArray(start)) throw new TypeError("Start must be an array");
+        if (!Array.isArray(end)) throw new TypeError("End must be an array");
+        if (start.some((x) => !Number.isInteger(x))) throw new TypeError("Start must contain only integers");
+        if (end.some((x) => !Number.isInteger(x))) throw new TypeError("End must contain only integers");
+        if (start.length !== 2) throw new RangeError("Start must have 2 values only");
+        if (end.length !== 2) throw new RangeError("End must have 2 values only");
+        start.forEach(num => {
+            if (num < 0 || num >= this.matrix.length) throw new RangeError("Start index out of bounds");
+        });
+        end.forEach(num => {
+            if (num < 0 || num >= this.matrix.length) throw new RangeError("End index out of bounds");
+        });
+        if (start.toString() === end.toString()) throw new Error("Start and end cannot be the same");
     }
 
-    addEdge(src, dst) {
-        this.#isValid(src, dst);
-        this.matrix[src][dst] = true;
+    #addEdge(i, j) {
+        this.matrix[i][j] = true;
     }
 
-    removeEdge(src, dst) {
-        this.#isValid(src, dst);
-        this.matrix[src][dst] = false;
-    }
-
-    checkEdge(src, dst) {
-        this.#isValid(src, dst);
-        return this.matrix[src][dst];
-    }
-
-    print() {
-        let col = "";
-        this.node.forEach(n => {
-            col = col + n + " ";
-        })
-
-        console.log("  " + col);
-
+    #clearEdges() {
         for(let i = 0; i < this.matrix.length; i++) {
-            let string = "";
             for(let j = 0; j < this.matrix.length; j++) {
-                string = string + Number(this.matrix[i][j]) + " ";
+                this.matrix[i][j] = false;
             }
-            console.log(this.node[i] + " " + string);
         }
+    }
+
+    #checkEdge(i, j) {
+        return this.matrix[i][j];
+    }
+
+    #findPossibleMoves(start, end, possibleMoves, moveList) {
+        const validMoves = [[1,-2],[2,-1],[2,1],[1,2],[-1,2],[-2,1],[-2,-1],[-1,-2]];
+
+        const path = new Map();
+        path.set(start.toString(),null);
+
+        let current = start;
+        while (possibleMoves.length > 0) {
+            if (!this.#checkEdge(current[0], current[1])) {
+                this.#addEdge(current[0], current[1]);
+
+                validMoves.forEach(m => {
+                    const row = current[0] + m[0];
+                    const col = current[1] + m[1];
+                    if (row < 0 || row >= this.matrix.length || col < 0 || col >= this.matrix.length) return;
+                    possibleMoves.push([row,col]);
+                    if (!path.has([row,col].toString())) path.set([row,col].toString(),current);
+                })
+            }
+            if (possibleMoves.some((pos) => pos.toString() === end.toString())) {
+                this.#findShortestPath(end, path, moveList)
+                break;
+            };
+            current = possibleMoves.shift();
+        }
+    }
+
+    #findShortestPath(end, path, moveList) {
+        let move = path.get(end.toString());
+        while(move) {
+            moveList.push(move);
+            move = path.get(move.toString());
+        }
+        moveList.reverse();
+        moveList.push(end);
+    }
+
+    knightMoves(start, end) {        
+        this.#isValid(start, end);
+        this.#clearEdges();
+        const possibleMoves = [start];
+        const moveList = [];
+        this.#findPossibleMoves(start, end, possibleMoves, moveList);
+
+        const formattedMoves = moveList.map(move => `[${move}]`).join('\n');
+        const message = `You made it in ${moveList.length - 1} ${moveList.length - 1 === 1 ? "move!" : "moves!"} Here's your path:\n${formattedMoves}`;
+        console.log(message);
+        return message;
     }
 }

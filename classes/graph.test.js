@@ -3,110 +3,82 @@ import { Graph } from "./graph.js";
 describe("Graph (constructor)", () => {
     test("Creates 8x8 board", () => {
         const graph = new Graph();
-        expect(graph.node.length).toBe(8);
-        expect(graph.matrix.length).toBe(graph.node.length);
+        expect(graph.matrix.length).toBe(8);
     })
 });
 
-describe("Graph (addEdge)", () => {
-    test("Throws range error from invalid index for source", () => {
+describe("Graph, (knightMoves)", () => {
+    test("Throws type error from invalid data type for start", () => {
         const graph = new Graph();
-        expect(() => graph.addEdge(9,0)).toThrow(RangeError);
+        expect(() => graph.knightMoves("[9,0]",[4,4])).toThrow(TypeError);
     })
-    test("Throws range error from invalid index for destination", () => {
+    test("Throws type error from invalid data type for end", () => {
         const graph = new Graph();
-        expect(() => graph.addEdge(0,9)).toThrow(RangeError);
+        expect(() => graph.knightMoves([0,0],"[4,4]")).toThrow(TypeError);
     })
-    test("Throws type error from non-integer input for source", () => {
+    test("Throws type error from invalid data type in start array", () => {
         const graph = new Graph();
-        expect(() => graph.addEdge("9",0)).toThrow(TypeError);
+        expect(() => graph.knightMoves(["0",0],[4,4])).toThrow(TypeError);
     })
-    test("Throws type error from non-integer input for destination", () => {
+    test("Throws type error from invalid data type in end array", () => {
         const graph = new Graph();
-        expect(() => graph.addEdge(0,"9")).toThrow(TypeError);
+        expect(() => graph.knightMoves([0,0],["4",4])).toThrow(TypeError);
     })
-    test("Throws error from source and destination being the same", () => {
+    test("Throws range error from invalid start length", () => {
         const graph = new Graph();
-        expect(() => graph.addEdge(0,0)).toThrow(Error);
+        expect(() => graph.knightMoves([0],[4,4])).toThrow(RangeError);
+        expect(() => graph.knightMoves([0,0,0],[4,4])).toThrow(RangeError);
     })
-    test("Flips false to true", () => {
+    test("Throws range error from invalid end length", () => {
         const graph = new Graph();
-        const src = 0;
-        const dst = 1;
-        expect(graph.matrix[src][dst]).toBeFalsy();
-        graph.addEdge(src,dst);
-        expect(graph.matrix[src][dst]).toBeTruthy();
+        expect(() => graph.knightMoves([0,0,],[4])).toThrow(RangeError);
+        expect(() => graph.knightMoves([0,0],[4,4,4])).toThrow(RangeError);
     })
-});
-
-describe("Graph (removeEdge)", () => {
-    test("Throws range error from invalid index for source", () => {
+    test("Throws range error from invalid index for start", () => {
         const graph = new Graph();
-        expect(() => graph.removeEdge(9,0)).toThrow(RangeError);
+        expect(() => graph.knightMoves([9,0],[4,4])).toThrow(RangeError);
+        expect(() => graph.knightMoves([0,9],[4,4])).toThrow(RangeError);
     })
-    test("Throws range error from invalid index for destination", () => {
+    test("Throws range error from invalid index for end", () => {
         const graph = new Graph();
-        expect(() => graph.removeEdge(0,9)).toThrow(RangeError);
+        expect(() => graph.knightMoves([4,4],[9,0])).toThrow(RangeError);
+        expect(() => graph.knightMoves([4,4],[0,9])).toThrow(RangeError);
     })
-    test("Throws type error from non-integer input for source", () => {
+    test("Throws error from start and end being the same", () => {
         const graph = new Graph();
-        expect(() => graph.removeEdge("9",0)).toThrow(TypeError);
+        expect(() => graph.knightMoves([0,0],[0,0])).toThrow(Error);
+        expect(() => graph.knightMoves([1,1],[1,1])).toThrow(Error);
+        expect(() => graph.knightMoves([2,2],[2,2])).toThrow(Error);
+        expect(() => graph.knightMoves([3,3],[3,3])).toThrow(Error);
     })
-    test("Throws type error from non-integer input for destination", () => {
+    test("knightMoves([0,0],[3,3]) to return 2 moves", () => {
         const graph = new Graph();
-        expect(() => graph.removeEdge(0,"9")).toThrow(TypeError);
+        const result = graph.knightMoves([0,0],[3,3]);
+        expect(result).toContain("You made it in 2 moves!");
     })
-    test("Throws error from source and destination being the same", () => {
+    test("knightMoves([3,3],[0,0]) to return 2 moves", () => {
         const graph = new Graph();
-        expect(() => graph.addEdge(0,0)).toThrow(Error);
+        const result = graph.knightMoves([3,3],[0,0]);
+        expect(result).toContain("You made it in 2 moves!");
     })
-    test("Flips true to false", () => {
+    test("knightMoves([3,3],[4,3]) to return 3 moves", () => {
         const graph = new Graph();
-        const src = 0;
-        const dst = 1;
-        graph.addEdge(src,dst);
-        expect(graph.matrix[src][dst]).toBeTruthy();
-        graph.removeEdge(src,dst);
-        expect(graph.matrix[src][dst]).toBeFalsy();
+        const result = graph.knightMoves([3,3],[4,3]);
+        expect(result).toContain("You made it in 3 moves!");
     })
-});
-
-describe("Graph (checkEdge)", () => {
-    test("Throws range error from invalid index for source", () => {
+    test("knightMoves([4,3],[3,3]) to return 3 moves", () => {
         const graph = new Graph();
-        expect(() => graph.checkEdge(9,0)).toThrow(RangeError);
+        const result = graph.knightMoves([4,3],[3,3]);
+        expect(result).toContain("You made it in 3 moves!");
     })
-    test("Throws range error from invalid index for destination", () => {
+    test("knightMoves([0,0],[7,7]) to return 6 moves", () => {
         const graph = new Graph();
-        expect(() => graph.checkEdge(0,9)).toThrow(RangeError);
+        const result = graph.knightMoves([0,0],[7,7]);
+        expect(result).toContain("You made it in 6 moves!");
     })
-    test("Throws type error from non-integer input for source", () => {
+    test("knightMoves([7,7],[0,0]) to return 6 moves", () => {
         const graph = new Graph();
-        expect(() => graph.checkEdge("9",0)).toThrow(TypeError);
+        const result = graph.knightMoves([7,7],[0,0]);
+        expect(result).toContain("You made it in 6 moves!");
     })
-    test("Throws type error from non-integer input for destination", () => {
-        const graph = new Graph();
-        expect(() => graph.checkEdge(0,"9")).toThrow(TypeError);
-    })
-    test("Throws error from source and destination being the same", () => {
-        const graph = new Graph();
-        expect(() => graph.addEdge(0,0)).toThrow(Error);
-    })
-    test("Returns false from unconnected nodes", () => {
-        const graph = new Graph();
-        for(let i = 0; i < graph.matrix.length; i++) {
-            for(let j = 0; j < graph.matrix.length; j++) {
-                expect(graph.matrix[i][j]).toBeFalsy();
-            }
-        }
-    })
-    test("Returns true from connected nodes", () => {
-        const graph = new Graph();
-        for(let i = 0; i < graph.matrix.length - 1; i++) {
-            graph.addEdge(i, i + 1);
-        }
-        for(let i = 0; i < graph.matrix.length - 1; i++) {
-            expect(graph.checkEdge(i, i + 1)).toBeTruthy();
-        }
-    })
-});
+})
