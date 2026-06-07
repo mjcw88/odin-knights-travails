@@ -82,7 +82,6 @@ export class Graph {
 
         const formattedMoves = moveList.map(move => `[${move}]`).join('\n');
         const message = `You made it in ${moveList.length - 1} ${moveList.length - 1 === 1 ? "move!" : "moves!"} Here's your path:\n${formattedMoves}`;
-        console.log(message);
         return message;
     }
 }
