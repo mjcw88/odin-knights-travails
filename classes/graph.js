@@ -6,17 +6,19 @@ export class Graph {
 
     #isValid(start, end) {
         if (!Array.isArray(start)) throw new TypeError("Start must be an array");
-        if (!Array.isArray(end)) throw new TypeError("End must be an array");
         if (start.some((x) => !Number.isInteger(x))) throw new TypeError("Start must contain only integers");
-        if (end.some((x) => !Number.isInteger(x))) throw new TypeError("End must contain only integers");
         if (start.length !== 2) throw new RangeError("Start must have 2 values only");
-        if (end.length !== 2) throw new RangeError("End must have 2 values only");
         start.forEach(num => {
             if (num < 0 || num >= this.matrix.length) throw new RangeError("Start index out of bounds");
         });
+
+        if (!Array.isArray(end)) throw new TypeError("End must be an array");
+        if (end.some((x) => !Number.isInteger(x))) throw new TypeError("End must contain only integers");
+        if (end.length !== 2) throw new RangeError("End must have 2 values only");
         end.forEach(num => {
             if (num < 0 || num >= this.matrix.length) throw new RangeError("End index out of bounds");
         });
+        
         if (start.toString() === end.toString()) throw new Error("Start and end cannot be the same");
     }
 
@@ -80,8 +82,9 @@ export class Graph {
         const moveList = [];
         this.#findPossibleMoves(start, end, possibleMoves, moveList);
 
-        const formattedMoves = moveList.map(move => `[${move}]`).join('\n');
-        const message = `You made it in ${moveList.length - 1} ${moveList.length - 1 === 1 ? "move!" : "moves!"} Here's your path:\n${formattedMoves}`;
+        const formattedMoves = moveList.map(move => `[${move}]`).join("\n");
+        const moveCount = moveList.length - 1;
+        const message = `You made it in ${moveCount} ${moveCount === 1 ? "move!" : "moves!"} Here's your path:\n${formattedMoves}`;
         return message;
     }
 }
