@@ -3,7 +3,7 @@ Knights Travails project for the Odin Project Full Stack Javascript course. Desi
 
 Full project specs can be found [here](https://www.theodinproject.com/lessons/javascript-knights-travails).
 
-##### Design Explanation
+#### Design Explanation
 
 The #knightMoves function takes in 2 arguments, each being an array of 2 integers, representing row and column index on the 8x8 chess board. This chess board is built as an adjacency matrix with each index being initialised to **false** representing whether or not the knight piece has moved to that respective square on the board. 
 
@@ -13,7 +13,7 @@ From here, the #findPossibleMoves function is then called and passes through the
 
 A hashmap called path is then created which creates a linked list of all paths the knight can make from one square to the next, initialised with a key of the starting position with a value of null.
 
-A while loop then begins with a breadth-first traversal through the queue of possible moves the knight can make currently make, first it checks if a edge has been created, if not, then it flips that edge to true, this is to prevent it from needlessly rechecking the same square over and over, and then begins checking what legal moves the knight can make from its current position with the aforementioned directions array. If it's a legal move and hasn't stepped on that square before it is then added to the path hashmap, with a key of the new square, and a value of the current position that discovered it.
+A while loop then begins with a breadth-first traversal through the queue of possible moves the knight can currently make, first it checks if a edge has been created, if not, then it flips that edge to true, this is to prevent it from needlessly rechecking the same square over and over, and then begins checking what legal moves the knight can make from the current position taken from the queue with the aforementioned directions array. If it's a legal move and hasn't stepped on that square before it is then added to the path hashmap, with a key of the new square, and a value of the current position that discovered it and added to the back of the queue.
 
 This while loop will keep going until it finds the desired destination and then return the path hashmap.
 
