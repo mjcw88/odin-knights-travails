@@ -40,7 +40,7 @@ export class Graph {
 
     #findPossibleMoves(start, end) {
         const possibleMoves = [start];
-        const validMoves = [[1,-2],[2,-1],[2,1],[1,2],[-1,2],[-2,1],[-2,-1],[-1,-2]];
+        const directions = [[1,-2],[2,-1],[2,1],[1,2],[-1,2],[-2,1],[-2,-1],[-1,-2]];
 
         const path = new Map();
         path.set(start.toString(),null);
@@ -50,9 +50,9 @@ export class Graph {
             if (!this.#checkEdge(current[0], current[1])) {
                 this.#addEdge(current[0], current[1]);
 
-                validMoves.forEach(m => {
-                    const row = current[0] + m[0];
-                    const col = current[1] + m[1];
+                directions.forEach(dir => {
+                    const row = current[0] + dir[0];
+                    const col = current[1] + dir[1];
                     if (row < 0 || row >= this.matrix.length || col < 0 || col >= this.matrix.length) return;
                     possibleMoves.push([row,col]);
                     if (!path.has([row,col].toString())) path.set([row,col].toString(),current);
@@ -83,8 +83,8 @@ export class Graph {
         const moveList = this.#findShortestPath(end, path);
 
         const moveCount = moveList.length - 1;
-        const formattedMoves = moveList.map(move => `[${move}]`).join("\n");
-        const message = `You made it in ${moveCount} ${moveCount === 1 ? "move!" : "moves!"} Here's your path:\n${formattedMoves}`;
+        const moves = moveList.map(move => `[${move}]`).join("\n");
+        const message = `You made it in ${moveCount} ${moveCount === 1 ? "move!" : "moves!"} Here's your path:\n${moves}`;
         return message;
     }
 }
