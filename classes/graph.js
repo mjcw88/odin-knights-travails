@@ -58,9 +58,7 @@ export class Graph {
                     if (!path.has([row,col].toString())) path.set([row,col].toString(),current);
                 })
             }
-            if (possibleMoves.some((pos) => pos.toString() === end.toString())) {
-                return this.#findShortestPath(end, path)
-            };
+            if (possibleMoves.some((pos) => pos.toString() === end.toString())) return path;
             current = possibleMoves.shift();
         }
     }
@@ -80,7 +78,9 @@ export class Graph {
     knightMoves(start, end) {        
         this.#isValid(start, end);
         this.#clearEdges();
-        const moveList = this.#findPossibleMoves(start, end);
+        
+        const path = this.#findPossibleMoves(start, end);
+        const moveList = this.#findShortestPath(end, path);
 
         const moveCount = moveList.length - 1;
         const formattedMoves = moveList.map(move => `[${move}]`).join("\n");
