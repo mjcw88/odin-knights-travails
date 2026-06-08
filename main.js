@@ -13,7 +13,7 @@ console.log("-".repeat(REPEAT));
 console.log(graph.knightMoves([3,3],[0,0]));
 
 console.log("-".repeat(REPEAT));
-console.log(graph.knightMoves([0,0],[7,7]));
+console.log(graph.knightMoves([3,3],[4,3]));
 
 console.log("-".repeat(REPEAT));
-console.log(graph.knightMoves([3,3],[4,3]));
+console.log(graph.knightMoves([0,0],[7,7]));

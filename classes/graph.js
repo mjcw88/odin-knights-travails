@@ -38,7 +38,8 @@ export class Graph {
         return this.matrix[i][j];
     }
 
-    #findPossibleMoves(start, end, possibleMoves, moveList) {
+    #findPossibleMoves(start, end) {
+        const possibleMoves = [start];
         const validMoves = [[1,-2],[2,-1],[2,1],[1,2],[-1,2],[-2,1],[-2,-1],[-1,-2]];
 
         const path = new Map();
@@ -58,14 +59,14 @@ export class Graph {
                 })
             }
             if (possibleMoves.some((pos) => pos.toString() === end.toString())) {
-                this.#findShortestPath(end, path, moveList)
-                break;
+                return this.#findShortestPath(end, path)
             };
             current = possibleMoves.shift();
         }
     }
 
-    #findShortestPath(end, path, moveList) {
+    #findShortestPath(end, path) {
+        const moveList = [];
         let move = path.get(end.toString());
         while(move) {
             moveList.push(move);
@@ -73,17 +74,16 @@ export class Graph {
         }
         moveList.reverse();
         moveList.push(end);
+        return moveList;
     }
 
     knightMoves(start, end) {        
         this.#isValid(start, end);
         this.#clearEdges();
-        const possibleMoves = [start];
-        const moveList = [];
-        this.#findPossibleMoves(start, end, possibleMoves, moveList);
+        const moveList = this.#findPossibleMoves(start, end);
 
-        const formattedMoves = moveList.map(move => `[${move}]`).join("\n");
         const moveCount = moveList.length - 1;
+        const formattedMoves = moveList.map(move => `[${move}]`).join("\n");
         const message = `You made it in ${moveCount} ${moveCount === 1 ? "move!" : "moves!"} Here's your path:\n${formattedMoves}`;
         return message;
     }
