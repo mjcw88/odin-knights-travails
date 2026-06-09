@@ -45,9 +45,8 @@ export class Graph {
         const path = new Map();
         path.set(start.toString(),null);
 
-        let current = start;
         while (possibleMoves.length > 0) {
-            current = possibleMoves.shift();
+            const current = possibleMoves.shift();
 
             if (this.#checkEdge(current)) continue;
 
