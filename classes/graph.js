@@ -38,7 +38,7 @@ export class Graph {
         return this.matrix[node[0]][node[1]];
     }
 
-    #findPossibleMoves(start, end) {
+    #getShortestPath(start, end) {
         const DIRECTIONS = [[1,-2],[2,-1],[2,1],[1,2],[-1,2],[-2,1],[-2,-1],[-1,-2]];
         const possibleMoves = [start];
 
@@ -64,7 +64,7 @@ export class Graph {
         }
     }
 
-    #findShortestPath(end, path) {
+    #getMoveList(end, path) {
         const moveList = [];
         let move = path.get(end.toString());
         while (move) {
@@ -80,8 +80,8 @@ export class Graph {
         this.#isValid(start, end);
         this.#clearEdges();
         
-        const path = this.#findPossibleMoves(start, end);
-        const moveList = this.#findShortestPath(end, path);
+        const path = this.#getShortestPath(start, end);
+        const moveList = this.#getMoveList(end, path);
 
         const moveCount = moveList.length - 1;
         const moves = moveList.map(move => `[${move}]`).join("\n");
