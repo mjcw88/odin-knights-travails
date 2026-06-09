@@ -22,51 +22,53 @@ export class Graph {
         if (start.toString() === end.toString()) throw new Error("Start and end cannot be the same");
     }
 
-    #addEdge(i, j) {
-        this.matrix[i][j] = true;
+    #addEdge(node) {
+        this.matrix[node[0]][node[1]] = true;
     }
 
     #clearEdges() {
-        for(let i = 0; i < this.matrix.length; i++) {
-            for(let j = 0; j < this.matrix.length; j++) {
+        for (let i = 0; i < this.matrix.length; i++) {
+            for (let j = 0; j < this.matrix.length; j++) {
                 this.matrix[i][j] = false;
             }
         }
     }
 
-    #checkEdge(i, j) {
-        return this.matrix[i][j];
+    #checkEdge(node) {
+        return this.matrix[node[0]][node[1]];
     }
 
     #findPossibleMoves(start, end) {
+        const DIRECTIONS = [[1,-2],[2,-1],[2,1],[1,2],[-1,2],[-2,1],[-2,-1],[-1,-2]];
         const possibleMoves = [start];
-        const directions = [[1,-2],[2,-1],[2,1],[1,2],[-1,2],[-2,1],[-2,-1],[-1,-2]];
 
         const path = new Map();
         path.set(start.toString(),null);
 
         let current = start;
         while (possibleMoves.length > 0) {
-            if (!this.#checkEdge(current[0], current[1])) {
-                this.#addEdge(current[0], current[1]);
-
-                directions.forEach(dir => {
-                    const row = current[0] + dir[0];
-                    const col = current[1] + dir[1];
-                    if (row < 0 || row >= this.matrix.length || col < 0 || col >= this.matrix.length) return;
-                    possibleMoves.push([row,col]);
-                    if (!path.has([row,col].toString())) path.set([row,col].toString(),current);
-                })
-            }
-            if (possibleMoves.some((pos) => pos.toString() === end.toString())) return path;
             current = possibleMoves.shift();
+
+            if (this.#checkEdge(current)) continue;
+
+            this.#addEdge(current);
+
+            DIRECTIONS.forEach(dir => {
+                const row = current[0] + dir[0];
+                const col = current[1] + dir[1];
+                if (row < 0 || row >= this.matrix.length || col < 0 || col >= this.matrix.length) return;
+                possibleMoves.push([row, col]);
+                if (!path.has([row, col].toString())) path.set([row, col].toString(), current);
+            });
+
+            if (possibleMoves.some((pos) => pos.toString() === end.toString())) return path;
         }
     }
 
     #findShortestPath(end, path) {
         const moveList = [];
         let move = path.get(end.toString());
-        while(move) {
+        while (move) {
             moveList.push(move);
             move = path.get(move.toString());
         }
