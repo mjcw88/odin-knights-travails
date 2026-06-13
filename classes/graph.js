@@ -53,11 +53,11 @@ export class Graph {
             this.#addEdge(current);
 
             DIRECTIONS.forEach(dir => {
-                const col = current[0] + dir[0];
-                const row = current[1] + dir[1];
-                if (col < 0 || col >= this.matrix.length || row < 0 || row >= this.matrix.length) return;
-                possibleMoves.push([col, row]);
-                if (!path.has([col, row].toString())) path.set([col, row].toString(), current);
+                const row = current[0] + dir[0];
+                const col = current[1] + dir[1];
+                if (row < 0 || row >= this.matrix.length || col < 0 || col >= this.matrix.length) return;
+                possibleMoves.push([row, col]);
+                if (!path.has([row, col].toString())) path.set([row, col].toString(), current);
             });
 
             if (possibleMoves.some((pos) => pos.toString() === end.toString())) return path;
